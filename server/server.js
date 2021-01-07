@@ -1,7 +1,14 @@
 const express = require('express');
 const app = express();
-const MongoClient = require('mongobd').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+const createRouter = require('./helpers/create_router.js');
+
+const cors = require('cors');
+app.use(cors());
 
 app.get('/', function (req, res){
     res.send("Hello!!");
@@ -12,9 +19,9 @@ app.get('/', function (req, res){
 MongoClient.connect('mongodb://localhost:27017')
 .then((client)=>{
     const db = client.db('guests');
-    const guestsCollection = db.collection("bookings");
+    const guestsCollection = db.collection('bookings');
     const bookingsRouter = createRouter(guestsCollection);
-    app.use('api/bookings', bookingsRouter);
+    app.use('/api/bookings', bookingsRouter);
 })
 .catch(console.error);
 
